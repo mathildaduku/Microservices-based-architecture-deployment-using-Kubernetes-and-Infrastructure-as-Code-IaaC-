@@ -21,9 +21,10 @@ pipeline {
             steps {
                 script {
                     dir('kubernetes') {
-                        sh "aws eks update-kubeconfig --name project-k8s-cluster"
-                        sh "kubectl apply -f nginx-deployment.yaml"
-                        sh "kubectl apply -f nginx-service.yaml"
+                        sh "aws eks --region us-east-1 update-kubeconfig --name demo"
+                        sh "kubectl apply -f complete-demo.yaml"
+                        sh "kubectl get pods -n sock-shop"
+                        sh "kubectl get svc -n sock-shop"
                     }
                 }
             }
