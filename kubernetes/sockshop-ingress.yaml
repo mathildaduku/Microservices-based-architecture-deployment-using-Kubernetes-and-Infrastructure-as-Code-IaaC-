@@ -13,5 +13,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: front-end
-          servicePort: 8080
+          service:
+            name: front-end
+              port: 
+                number: 80
