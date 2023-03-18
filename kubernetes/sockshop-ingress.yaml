@@ -1,0 +1,17 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: http-express
+  namespace: sock-shop
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: sockshop.mathidaduku.me
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: front-end
+          servicePort: 8080

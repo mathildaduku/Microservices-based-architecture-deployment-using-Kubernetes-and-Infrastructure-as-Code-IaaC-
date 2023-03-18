@@ -26,6 +26,11 @@ pipeline {
                         sh "kubectl get pods -n sock-shop"
                         sh "kubectl get svc -n sock-shop"
                         sh "kubectl apply -f nginx-ingress.yaml"
+                        sh "kubectl get pods -n ingress-nginx"
+                        sh "kubectl get svc -n ingress-nginx"
+                        sh "kubectl apply -f sockshop-ingress.yaml"
+                        sh "kubectl get ing -n sockshop"
+                        sh "kubectl get svc -n ingress-nginx"
                     }
                 }
             }
