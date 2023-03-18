@@ -25,6 +25,7 @@ pipeline {
                         sh "kubectl apply -f complete-demo.yaml"
                         sh "kubectl get pods -n sock-shop"
                         sh "kubectl get svc -n sock-shop"
+                        sh "kubectl apply -f nginx-ingress.yaml"
                     }
                 }
             }
