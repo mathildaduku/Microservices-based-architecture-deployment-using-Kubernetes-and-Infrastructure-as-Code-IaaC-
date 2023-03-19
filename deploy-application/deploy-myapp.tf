@@ -9,14 +9,14 @@ resource "kubernetes_namespace" "k8s-namespace-myapp" {
   }
 }
 
-data "kubectl_file_documents" "app-file" {
-    content = file("myapp.yaml")
-}
+# data "kubectl_file_documents" "app-file" {
+#     content = file("myapp.yaml")
+# }
 
-resource "kubectl_manifest" "k8s-deployment-myapp" {
-    for_each  = data.kubectl_file_documents.app-file.manifests
-    yaml_body = each.value
-}
+# resource "kubectl_manifest" "k8s-deployment-myapp" {
+#     for_each  = data.kubectl_file_documents.app-file.manifests
+#     yaml_body = each.value
+# }
 
 resource "kubernetes_deployment" "todo_list" {
   metadata {

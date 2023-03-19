@@ -62,7 +62,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
+  - name: metrics
+    port: 80
     targetPort: 80
   selector:
     name: carts
@@ -192,7 +193,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
+  - name: metrics
+    port: 80
     targetPort: 80
   selector:
     name: catalogue
@@ -295,24 +297,6 @@ spec:
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  annotations:
-        prometheus.io/scrape: 'true'
-  labels:
-    name: front-end
-  namespace: sock-shop
-spec:
-  type: NodePort
-  ports:
-  - port: 80
-    targetPort: 8079
-    nodePort: 30001
-  selector:
-    name: front-end
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -376,7 +360,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
+  - name: metrics
+    port: 80
     targetPort: 80
   selector:
     name: orders
@@ -503,7 +488,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
+  - name: metrics
+    port: 80
     targetPort: 80
   selector:
     name: payment
@@ -555,7 +541,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
+  - name: metrics
+    port: 80
     targetPort: 80
   selector:
     name: queue-master
@@ -745,7 +732,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
+  - name: metrics
+    port: 80
     targetPort: 80
   selector:
     name: shipping
@@ -819,7 +807,8 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
+  - name: metrics
+    port: 80
     targetPort: 80
   selector:
     name: user
@@ -882,4 +871,3 @@ spec:
     targetPort: 27017
   selector:
     name: user-db
-
