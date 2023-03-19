@@ -8,57 +8,6 @@ resource "aws_route53_zone" "sockshop-domain-name" {
   name = "sockshop.mathidaduku.me"
 }
 
-# create SSL certificate 
-resource "aws_acm_certificate" "ssl" {
-  domain_name               = "sockshop.mathidaduku.me"
-  subject_alternative_names = ["*.sockshop.mathidaduku.me"]
-  validation_method         = "DNS"
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-## create DNS record for ACM certificate
-resource "aws_route53_record" "cert_validation" {
-  allow_overwrite = true
-  name            = tolist(aws_acm_certificate.ssl.domain_validation_options)[0].resource_record_name
-  records         = [tolist(aws_acm_certificate.ssl.domain_validation_options)[0].resource_record_value]
-  type            = tolist(aws_acm_certificate.ssl.domain_validation_options)[0].resource_record_type
-  zone_id         = aws_route53_zone.sockshop-domain-name.id
-  ttl             = 60
-}
-
-## Validates ACM certificate
-resource "aws_acm_certificate_validation" "cert" {
-  certificate_arn         = aws_acm_certificate.ssl.arn
-  validation_record_fqdns = [aws_route53_record.cert_validation.fqdn]
-}
-
-# create SSL certificate 
-resource "aws_acm_certificate" "sslb" {
-  domain_name               = "sockshop.mathidaduku.me"
-  subject_alternative_names = ["*.sockshop.mathidaduku.me"]
-  validation_method         = "DNS"
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-## create DNS record for ACM certificate
-resource "aws_route53_record" "cert_validationb" {
-  allow_overwrite = true
-  name            = tolist(aws_acm_certificate.sslb.domain_validation_options)[0].resource_record_name
-  records         = [tolist(aws_acm_certificate.sslb.domain_validation_options)[0].resource_record_value]
-  type            = tolist(aws_acm_certificate.sslb.domain_validation_options)[0].resource_record_type
-  zone_id         = aws_route53_zone.myapp-domain-name.id
-  ttl             = 60
-}
-
-## Validates ACM certificate
-resource "aws_acm_certificate_validation" "certb" {
-  certificate_arn         = aws_acm_certificate.sslb.arn
-  validation_record_fqdns = [aws_route53_record.cert_validationb.fqdn]
-}
 
 # Get the zone_id for the load balancer
 
