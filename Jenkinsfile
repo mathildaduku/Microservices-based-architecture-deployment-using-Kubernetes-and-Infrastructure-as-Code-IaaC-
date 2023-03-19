@@ -40,8 +40,9 @@ pipeline {
         stage("Setup monitoring") {
             steps {
                 script {
-                    dir('manifests-monitoring') {
-                        sh "kubectl create -f ./manifests-monitoring"
+                    dir('setup-monitoring') {
+                        sh "terraform init"
+                        sh "terraform apply -auto-approve"
                     }
                 }
             }
