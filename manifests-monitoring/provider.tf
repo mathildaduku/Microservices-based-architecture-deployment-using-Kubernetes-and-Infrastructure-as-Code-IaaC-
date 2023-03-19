@@ -1,10 +1,8 @@
-# AWS provider
 
 provider "aws" {
   region     = "us-east-1"
 }
 
-# Kubectl Terraform provider
 
 terraform {
   required_providers {
@@ -23,9 +21,6 @@ terraform {
   }
 }
 
-# Kubernetes provider configuration
-
-# Retrieve eks cluster using data source
 
 data "aws_eks_cluster" "demo" {
   name = "demo"
@@ -43,7 +38,6 @@ provider "kubernetes" {
   }
 }
 
-# Kubectl provider configuration
 
 provider "kubectl" {
   host                   = data.aws_eks_cluster.demo.endpoint
@@ -55,13 +49,11 @@ provider "kubectl" {
   }
 }
 
-# Retrieve EKS cluster authentication token
 
 data "aws_eks_cluster_auth" "eks-token" {
   name = "demo"
 }
 
-# Heml provider configuration
 
 provider "helm" {
   kubernetes {

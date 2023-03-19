@@ -1,7 +1,3 @@
-# PORTFOLIO DEPLOYMENT
-
-# Create kubernetes Name space for portfolio
-
 
 resource "kubernetes_namespace" "k8s-namespace-myapp" {
   metadata {
@@ -59,17 +55,11 @@ resource "kubernetes_deployment" "k8s-deployment-db" {
 }
 
 
-
-
-# Create kubernetes  for cart service
-
 resource "kubernetes_service" "k8s-service-db" {
   metadata {
     name      = "db"
     namespace = kubernetes_namespace.k8s-namespace-myapp.id
-    /* annotations = {
-        prometheus.io/scrape: "true"
-    } */
+
 
     labels = {
         name = "db-service"
@@ -131,16 +121,10 @@ resource "kubernetes_deployment" "k8s-deployment-redis" {
 }
 
 
-
-# Create kubernetes  for cart service
-
 resource "kubernetes_service" "kube-redis-service" {
   metadata {
     name      = "redis"
     namespace =  kubernetes_namespace.k8s-namespace-myapp.id
-    /* annotations = {
-        prometheus.io/scrape: "true"
-    } */
 
     labels = {
         name = "redis-service"
@@ -199,16 +183,10 @@ resource "kubernetes_deployment" "k8s-deployment-result" {
 }
 
 
-
-# Create kubernetes  for cart service
-
 resource "kubernetes_service" "kube-result-service" {
   metadata {
     name      = "result-service"
     namespace =  kubernetes_namespace.k8s-namespace-myapp.id
-   /*  annotations = {
-        prometheus.io/scrape: "true"
-    } */
 
     labels = {
         name = "result-service"
@@ -266,17 +244,10 @@ resource "kubernetes_deployment" "k8s-deployment-voting" {
 }
 }
 
-
-
-# Create kubernetes  for cart service
-
 resource "kubernetes_service" "kube-voting-service" {
   metadata {
     name      = "voting-service"
     namespace =  kubernetes_namespace.k8s-namespace-myapp.id
-   /*  annotations = {
-        prometheus.io/scrape: "true"
-    } */
 
     labels = {
         name = "voting-service"

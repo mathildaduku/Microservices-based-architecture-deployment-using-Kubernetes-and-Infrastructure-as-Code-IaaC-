@@ -1,7 +1,4 @@
 
-# SOCKS SHOP DEPLOYMENT
-
-# Create kubernetes Name space for socks shop app
 
 resource "kubernetes_namespace" "k8s-namespace-sockshop" {
   metadata {
@@ -9,7 +6,6 @@ resource "kubernetes_namespace" "k8s-namespace-sockshop" {
   }
 }
 
-# Create kubectl deployment for socks app
 
 data "kubectl_file_documents" "sock-file" {
     content = file("complete-demo.yaml")
@@ -20,7 +16,6 @@ resource "kubectl_manifest" "k8s-deployment-sockshop" {
     yaml_body = each.value
 }
 
-# Create separate kubernetes service for socks shop frontend
 
 resource "kubernetes_service" "k8s-service-sockshop" {
   metadata {
@@ -46,13 +41,11 @@ resource "kubernetes_service" "k8s-service-sockshop" {
   }
 }
 
-# Print out loadbalancer DNS hostname for portfolio deployment
 
 # output "myapp_load_balancer_dns" {
 #   value = kubernetes_service.kube-voting-service.status.0.load_balancer.0.ingress.0.hostname
 # }
 
-# Print out loadbalancer DNS hostname for socks deployment
 
 output "sockshop_load_balancer_dns" {
   value = kubernetes_service.k8s-service-sockshop.status.0.load_balancer.0.ingress.0.hostname
