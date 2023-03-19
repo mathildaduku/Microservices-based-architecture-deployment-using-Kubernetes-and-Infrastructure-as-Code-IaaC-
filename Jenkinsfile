@@ -41,6 +41,7 @@ pipeline {
             steps {
                 script {
                     dir('manifests-monitoring') {
+                        sh "aws eks --region us-east-1 update-kubeconfig --name demo"
                         sh "kubectl create -f 00-monitoring-ns.yaml"
                         sh "terraform init"
                         sh "terraform apply -auto-approve"
