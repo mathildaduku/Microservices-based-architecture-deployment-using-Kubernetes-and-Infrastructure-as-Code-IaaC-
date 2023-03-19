@@ -5,10 +5,7 @@
 
 resource "kubernetes_namespace" "k8s-namespace-myapp" {
   metadata {
-    name = "myapp-namespace"
-    labels = {
-      app = "myapp"
-    }
+    name = "myapp"
   }
 }
 
