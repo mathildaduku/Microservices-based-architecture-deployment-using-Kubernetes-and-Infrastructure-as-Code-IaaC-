@@ -18,17 +18,17 @@ data "aws_elb_hosted_zone_id" "load_balancer_zone_id" {
 
 # DNS record for portfolio
 
-resource "aws_route53_record" "myapp-dns-record" {
-  zone_id = aws_route53_zone.myapp-domain-name.zone_id
-  name    = "webapp.mathidaduku.me"
-  type    = "A"
+# resource "aws_route53_record" "myapp-dns-record" {
+#   zone_id = aws_route53_zone.myapp-domain-name.zone_id
+#   name    = "webapp.mathidaduku.me"
+#   type    = "A"
 
-  alias {
-    name                   = kubernetes_service.kube-voting-service.status.0.load_balancer.0.ingress.0.hostname
-    zone_id                = data.aws_elb_hosted_zone_id.load_balancer_zone_id.id
-    evaluate_target_health = true
-  }
-}
+#   alias {
+#     name                   = kubernetes_service.kube-voting-service.status.0.load_balancer.0.ingress.0.hostname
+#     zone_id                = data.aws_elb_hosted_zone_id.load_balancer_zone_id.id
+#     evaluate_target_health = true
+#   }
+# }
 
 # DNS record for socks
 
