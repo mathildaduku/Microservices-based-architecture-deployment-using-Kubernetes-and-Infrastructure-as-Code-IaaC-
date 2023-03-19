@@ -12,7 +12,7 @@ resource "aws_route53_zone" "sockshop-domain-name" {
 
 data "aws_elb_hosted_zone_id" "load_balancer_zone_id" {
   depends_on = [
-    kubernetes_service.todo_list, kubernetes_service.k8s-service-sockshop
+    kubernetes_service.kube-voting-service, kubernetes_service.k8s-service-sockshop
   ]
 }
 
