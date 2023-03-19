@@ -24,7 +24,7 @@ resource "aws_route53_record" "myapp-dns-record" {
   type    = "A"
 
   alias {
-    name                   = kubernetes_service.todo_list.status.0.load_balancer.0.ingress.0.hostname
+    name                   = kubernetes_service.kube-voting-service.status.0.load_balancer.0.ingress.0.hostname
     zone_id                = data.aws_elb_hosted_zone_id.load_balancer_zone_id.id
     evaluate_target_health = true
   }
