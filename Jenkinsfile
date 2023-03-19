@@ -37,5 +37,14 @@ pipeline {
                 }
             }
         }
+        stage("Setup monitoring") {
+            steps {
+                script {
+                    dir('manifests-monitoring') {
+                        sh "kubectl create -f ./manifests-monitoring"
+                    }
+                }
+            }
+        }        
     }
 }
