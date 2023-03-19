@@ -24,7 +24,7 @@ resource "aws_route53_record" "cert_validation" {
   name            = tolist(aws_acm_certificate.ssl.domain_validation_options)[0].resource_record_name
   records         = [tolist(aws_acm_certificate.ssl.domain_validation_options)[0].resource_record_value]
   type            = tolist(aws_acm_certificate.ssl.domain_validation_options)[0].resource_record_type
-  zone_id         = data.aws_route53_zone.sockshop-domain-name.id
+  zone_id         = aws_route53_zone.sockshop-domain-name.id
   ttl             = 60
 }
 
@@ -50,7 +50,7 @@ resource "aws_route53_record" "cert_validationb" {
   name            = tolist(aws_acm_certificate.sslb.domain_validation_options)[0].resource_record_name
   records         = [tolist(aws_acm_certificate.sslb.domain_validation_options)[0].resource_record_value]
   type            = tolist(aws_acm_certificate.sslb.domain_validation_options)[0].resource_record_type
-  zone_id         = data.aws_route53_zone.myapp-domain-name.id
+  zone_id         = aws_route53_zone.myapp-domain-name.id
   ttl             = 60
 }
 
