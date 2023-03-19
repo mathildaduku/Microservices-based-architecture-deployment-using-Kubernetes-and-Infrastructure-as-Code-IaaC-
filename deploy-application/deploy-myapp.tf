@@ -51,7 +51,7 @@ resource "kubernetes_deployment" "todo_list" {
             container_port = 5000
           }
           resources {
-            limits {
+            limits = {
               cpu    = "0.5"
               memory = "512Mi"
             }
@@ -120,7 +120,7 @@ resource "kubernetes_deployment" "postgres" {
             container_port = 5432
           }
           resources {
-            limits {
+            limits = {
               cpu = "0.5"
               memory = "512Mi"
             }
