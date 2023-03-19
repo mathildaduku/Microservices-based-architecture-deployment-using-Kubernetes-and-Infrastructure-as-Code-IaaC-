@@ -288,6 +288,7 @@ resource "kubernetes_service" "kube-voting-service" {
       port        = 80
       target_port = 80
     }
+    type = "LoadBalancer"
   }
 }
 
