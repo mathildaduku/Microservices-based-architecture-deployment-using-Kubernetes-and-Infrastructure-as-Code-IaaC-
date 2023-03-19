@@ -55,5 +55,5 @@ output "myapp_load_balancer_dns" {
 # Print out loadbalancer DNS hostname for socks deployment
 
 output "sockshop_load_balancer_dns" {
-  value = kubernetes_service.kube-voting-service.status.0.load_balancer.0.ingress.0.hostname
+  value = kubernetes_service.k8s-service-sockshop.status.0.load_balancer.0.ingress.0.hostname
 }
