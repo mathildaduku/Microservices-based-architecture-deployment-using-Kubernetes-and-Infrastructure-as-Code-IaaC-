@@ -83,6 +83,7 @@ resource "aws_nat_gateway" "nat" {
   depends_on = [aws_internet_gateway.igw]
 }
 
+
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
@@ -155,3 +156,20 @@ resource "aws_route_table_association" "public-us-east-1b" {
   route_table_id = aws_route_table.public.id
 }
 
+resource "aws_security_group" "eks-security-group" {
+  name        = "eks-security-group"
+  description = "security group for incoming traffic in cluster"
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }  
+}

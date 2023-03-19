@@ -1,0 +1,91 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-list
+  namespace: myapp  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-list
+  template:
+    metadata:
+      labels:
+        app: todo-list
+    spec:
+      containers:
+      - name: todo-list
+        image: my-todo-list-image:latest
+        env:
+        - name: DATABASE_URL
+          value: postgresql://todo-user:todo-pass@postgres/todo-db
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: 0.5
+            memory: 512Mi
+
+#service for frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-list
+  namespace: myapp
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5000
+  selector:
+    app: todo-list
+
+# deployment manifest for database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        env:
+        - name: POSTGRES_USER
+          value: todo-user
+        - name: POSTGRES_PASSWORD
+          value: todo-pass
+        - name: POSTGRES_DB
+          value: todo-db
+        ports:
+        - containerPort: 5432
+        resources:
+          limits:
+            cpu: 0.5
+            memory: 512Mi
+
+#service for database
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: myapp
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres
