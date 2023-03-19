@@ -39,24 +39,25 @@ resource "kubernetes_deployment" "k8s-deployment-db" {
           image = "postgres:9.4"
           name  = "postgres"
 
-      env {
-        name = "POSTGRES_USER"
-        value = "postgres"
-      }
+          env {
+            name = "POSTGRES_USER"
+            value = "postgres"
+          }
 
-      env{
-        name = "POSTGRES_PASSWORD"
-        value = "postgres"
-      }
+          env{
+            name = "POSTGRES_PASSWORD"
+            value = "postgres"
+          }
 
-      port {
-        container_port = 5432
-      }
+          port {
+            container_port = 5432
+          }
+        }
       }
     }
   }
 }
-}
+
 
 
 
