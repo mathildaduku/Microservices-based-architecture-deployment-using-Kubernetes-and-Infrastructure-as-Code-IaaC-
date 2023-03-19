@@ -85,6 +85,9 @@ resource "kubernetes_service" "k8s-service-db" {
       port        = 5432
       target_port = 5432
     }
+
+    type = "ClusterIP"
+
   }
 }
 
@@ -286,6 +289,7 @@ resource "kubernetes_service" "kube-voting-service" {
       app = "myapp"
     }
     port {
+      name = "metrics"
       port        = 80
       target_port = 80
     }
