@@ -2,90 +2,210 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todo-list
-  namespace: myapp  
+  name: psql-deployment
+  labels:
+    app: myapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: todo-list
+      name: psql-pod
+      app: myapp
   template:
     metadata:
+      name: psql-pod
       labels:
-        app: todo-list
-    spec:
-      containers:
-      - name: todo-list
-        image: my-todo-list-image:latest
-        env:
-        - name: DATABASE_URL
-          value: postgresql://todo-user:todo-pass@postgres/todo-db
-        ports:
-        - containerPort: 5000
-        resources:
-          limits:
-            cpu: 0.5
-            memory: 512Mi
+        name: psql-pod
+        app: myapp
 
-#service for frontend
-apiVersion: v1
-kind: Service
-metadata:
-  name: todo-list
-  namespace: myapp
-spec:
-  type: LoadBalancer
-  ports:
-  - name: http
-    port: 80
-    targetPort: 5000
-  selector:
-    app: todo-list
-
-# deployment manifest for database
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: postgres
-  namespace: myapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: postgres
-  template:
-    metadata:
-      labels:
-        app: postgres
     spec:
       containers:
       - name: postgres
-        image: postgres:latest
-        env:
-        - name: POSTGRES_USER
-          value: todo-user
-        - name: POSTGRES_PASSWORD
-          value: todo-pass
-        - name: POSTGRES_DB
-          value: todo-db
+        image: postgres:9.4
         ports:
         - containerPort: 5432
-        resources:
-          limits:
-            cpu: 0.5
-            memory: 512Mi
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
 
-#service for database
+---
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
-  namespace: myapp
+  name: db
+  labels:
+    name: db-service
+    app: myapp
 spec:
-  type: ClusterIP
   ports:
-  - name: postgres
-    port: 5432
+  - port: 5432
     targetPort: 5432
   selector:
-    app: postgres
+    name: psql-pod
+    app: myapp
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  labels:
+    app: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: redis-pod
+      app: myapp
+  template:
+    metadata:
+      name: redis-pod
+      labels:
+        name: redis-pod
+        app: myapp
+
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    name: redis-service
+    app: myapp
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    name: redis-pod
+    app: myapp
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result-deployment
+  labels:
+    app: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: result-pod
+      app: myapp
+  template:
+    metadata:
+      name: result-pod
+      labels:
+        name: result-pod
+        app: myapp
+
+    spec:
+      containers:
+      - name: result-app
+        image: dockersamples/examplevotingapp_result
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: result-service
+  labels:
+    name: result-service
+    app: myapp
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    name: result-pod
+    app: myapp
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voting-app-deployment
+  labels:
+    app: myapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: voting-pod
+      app: myapp
+  template:
+    metadata:
+      name: voting-pod
+      labels:
+        name: voting-pod
+        app: myapp
+
+    spec:
+      containers:
+      - name: voting-app
+        image: kodekloud/examplevotingapp_vote:v1
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: voting-service
+  labels:
+    name: voting-service
+    app: myapp
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    name: voting-pod
+    app: myapp
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  labels:
+    app: myapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: worker-pod
+      app: myapp
+  template:
+    metadata:
+      name: worker-pod
+      labels:
+        name: worker-pod
+        app: myapp
+
+    spec:
+      containers:
+      - name: worker-app
+        image: dockersamples/examplevotingapp_worker

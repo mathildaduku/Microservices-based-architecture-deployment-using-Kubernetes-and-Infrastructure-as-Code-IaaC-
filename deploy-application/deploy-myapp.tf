@@ -9,147 +9,316 @@ resource "kubernetes_namespace" "k8s-namespace-myapp" {
   }
 }
 
-# data "kubectl_file_documents" "app-file" {
-#     content = file("myapp.yaml")
-# }
-
-# resource "kubectl_manifest" "k8s-deployment-myapp" {
-#     for_each  = data.kubectl_file_documents.app-file.manifests
-#     yaml_body = each.value
-# }
-
-resource "kubernetes_deployment" "todo_list" {
+resource "kubernetes_deployment" "k8s-deployment-db" {
   metadata {
-    name      = "todo-list"
-    namespace = kubernetes_namespace.k8s-namespace-myapp.id
+    name      = "psql-deployment"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+    labels = {
+      name = "myapp"
+    }
   }
+
   spec {
     replicas = 1
     selector {
       match_labels = {
-        app = "todo-list"
+        name = "psql-pod"
+        app = "myapp"
       }
     }
     template {
       metadata {
+        name =  "psql-pod"
         labels = {
-          app = "todo-list"
+          name = "psql-pod"
+          app = "myapp"
         }
       }
       spec {
         container {
-          name  = "todo-list"
-          image = "my-todo-list-image:latest"
-          env {
-            name  = "DATABASE_URL"
-            value = "postgresql://todo-user:todo-pass@postgres/todo-db"
-          }
-          port {
-            container_port = 5000
-          }
-          resources {
-            limits = {
-              cpu    = "0.5"
-              memory = "512Mi"
-            }
-          }
-        }
+          image = "postgres:9.4"
+          name  = "postgres"
+
+      env {
+        name = "POSTGRES_USER"
+        value = "postgres"
+        name = "POSTGRES_PASSWORD"
+        value = "postgres"
+      }
+
+      port {
+        container_port = 5432
+      }
       }
     }
   }
 }
+}
 
 
-resource "kubernetes_service" "todo_list" {
+
+# Create kubernetes  for cart service
+
+resource "kubernetes_service" "k8s-service-db" {
   metadata {
-    name = "todo-list"
+    name      = "db"
     namespace = kubernetes_namespace.k8s-namespace-myapp.id
+    /* annotations = {
+        prometheus.io/scrape: "true"
+    } */
+
+    labels = {
+        name = "db-service"
+        app = "myapp"
+    }
   }
   spec {
     selector = {
-      app = "todo-list"
+      name = "psql-pod"
+      app = "myapp"
     }
     port {
-      name = "http"
-      port = 80
-      target_port = 5000
-    }
-    type = "LoadBalancer"
-  }
-}
-
-
-resource "kubernetes_deployment" "postgres" {
-  metadata {
-    name = "postgres"
-    namespace = kubernetes_namespace.k8s-namespace-myapp.id
-  }
-  spec {
-    replicas = 1
-    selector {
-      match_labels = {
-        app = "postgres"
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          app = "postgres"
-        }
-      }
-      spec {
-        container {
-          name = "postgres"
-          image = "postgres:latest"
-          env {
-            name = "POSTGRES_USER"
-            value = "todo-user"
-          }
-          env {
-            name = "POSTGRES_PASSWORD"
-            value = "todo-pass"
-          }
-          env {
-            name = "POSTGRES_DB"
-            value = "todo-db"
-          }
-          port {
-            container_port = 5432
-          }
-          resources {
-            limits = {
-              cpu = "0.5"
-              memory = "512Mi"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-
-resource "kubernetes_service" "postgres" {
-  metadata {
-    name = "postgres"
-    namespace = kubernetes_namespace.k8s-namespace-myapp.id
-  }
-  spec {
-    selector = {
-      app = "postgres"
-    }
-    port {
-      name = "postgres"
-      port = 5432
+      port        = 5432
       target_port = 5432
     }
-    type = "ClusterIP"
   }
+}
+
+resource "kubernetes_deployment" "k8s-deployment-redis" {
+  metadata {
+    name      = "redis-deployment"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+    labels = {
+      name = "myapp"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        name = "redis-pod"
+        app = "myapp"
+      }
+    }
+    template {
+      metadata {
+        name =  "redis-pod"
+        labels = {
+          name = "redis-pod"
+          app = "myapp"
+        }
+      }
+      spec {
+        container {
+          image = "redis"
+          name  = "redis"
+
+      port {
+        container_port = 6379
+      }
+      }
+    }
+  }
+}
 }
 
 
 
- 
+# Create kubernetes  for cart service
+
+resource "kubernetes_service" "kube-redis-service" {
+  metadata {
+    name      = "redis"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+    /* annotations = {
+        prometheus.io/scrape: "true"
+    } */
+
+    labels = {
+        name = "redis-service"
+        app = "myapp"
+    }
+  }
+  spec {
+    selector = {
+      name = "redis-pod"
+      app = "myapp"
+    }
+    port {
+      port        = 6379
+      target_port = 6379
+    }
+  }
+}
+
+resource "kubernetes_deployment" "k8s-deployment-result" {
+  metadata {
+    name      = "result-deployment"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+    labels = {
+      name = "myapp"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        name = "result-pod"
+        app = "myapp"
+      }
+    }
+    template {
+      metadata {
+        name =  "result-pod"
+        labels = {
+          name = "result-pod"
+          app = "myapp"
+        }
+      }
+      spec {
+        container {
+          image = "dockersamples/examplevotingapp_result"
+          name  = "result-app"
+
+      port {
+        container_port = 80
+      }
+      }
+    }
+  }
+}
+}
 
 
 
+# Create kubernetes  for cart service
+
+resource "kubernetes_service" "kube-result-service" {
+  metadata {
+    name      = "result-service"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+   /*  annotations = {
+        prometheus.io/scrape: "true"
+    } */
+
+    labels = {
+        name = "result-service"
+        app = "myapp"
+    }
+  }
+  spec {
+    selector = {
+      name = "result-pod"
+      app = "myapp"
+    }
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
+}
+
+resource "kubernetes_deployment" "k8s-deployment-voting" {
+  metadata {
+    name      = "voting-app-deployment"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+    labels = {
+      name = "myapp"
+    }
+  }
+
+  spec {
+    replicas = 3
+    selector {
+      match_labels = {
+        name = "voting-pod"
+        app = "myapp"
+      }
+    }
+    template {
+      metadata {
+        name =  "voting-pod"
+        labels = {
+          name = "voting-pod"
+          app = "myapp"
+        }
+      }
+      spec {
+        container {
+          image = "kodekloud/examplevotingapp_vote:v1"
+          name  = "voting-app"
+
+      port {
+        container_port = 80
+      }
+      }
+    }
+  }
+}
+}
+
+
+
+# Create kubernetes  for cart service
+
+resource "kubernetes_service" "kube-voting-service" {
+  metadata {
+    name      = "voting-service"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+   /*  annotations = {
+        prometheus.io/scrape: "true"
+    } */
+
+    labels = {
+        name = "voting-service"
+        app = "myapp"
+    }
+  }
+  spec {
+    selector = {
+      name = "voting-pod"
+      app = "myapp"
+    }
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
+}
+
+resource "kubernetes_deployment" "k8s-deployment-worker" {
+  metadata {
+    name      = "worker-deployment"
+    namespace =  kubernetes_namespace.k8s-namespace-myapp.id
+    labels = {
+      name = "myapp"
+    }
+  }
+
+  spec {
+    replicas = 3
+    selector {
+      match_labels = {
+        name = "worker-pod"
+        app = "myapp"
+      }
+    }
+    template {
+      metadata {
+        name =  "worker-pod"
+        labels = {
+          name = "worker-pod"
+          app = "myapp"
+        }
+      }
+      spec {
+        container {
+          image = "dockersamples/examplevotingapp_worker"
+          name  = "worker-app"
+      }
+    }
+  }
+}
+}
