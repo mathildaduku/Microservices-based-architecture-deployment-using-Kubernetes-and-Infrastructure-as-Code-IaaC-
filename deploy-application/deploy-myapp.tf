@@ -42,6 +42,9 @@ resource "kubernetes_deployment" "k8s-deployment-db" {
       env {
         name = "POSTGRES_USER"
         value = "postgres"
+      }
+
+      env{
         name = "POSTGRES_PASSWORD"
         value = "postgres"
       }
