@@ -35,6 +35,7 @@ pipeline {
                         sh "terraform init"
                         sh "terraform apply -auto-approve"
                         sh "kubectl get pods -n monitoring"
+                        sh "kubectl port-forward -n monitoring prometheus-deployment-89bb7b4bf-rld45 9090"
                     }
                 }
             }
