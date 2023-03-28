@@ -11,8 +11,7 @@ pipeline {
             steps {
                 script {
                     dir('create-eks-cluster') {
-                        sh "terraform init"
-                        sh "terraform apply -auto-approve"
+                        sh "terraform destroy -auto-approve"
                     }
                 }
             }
@@ -21,8 +20,7 @@ pipeline {
             steps {
                 script {
                     dir('deploy-application') {
-                        sh "terraform init"
-                        sh "terraform apply -auto-approve"
+                        sh "terraform destroy -auto-approve"
                     }
                 }
             }
@@ -31,10 +29,7 @@ pipeline {
             steps {
                 script {
                     dir('manifests-monitoring') {
-                        sh "aws eks --region us-east-1 update-kubeconfig --name demo"
-                        sh "terraform init"
-                        sh "terraform apply -auto-approve"
-                        sh "kubectl -n monitoring describe services"
+                        sh "terraform destroy -auto-approve"
                     }
                 }
             }
