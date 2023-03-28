@@ -34,9 +34,7 @@ pipeline {
                         sh "aws eks --region us-east-1 update-kubeconfig --name demo"
                         sh "terraform init"
                         sh "terraform apply -auto-approve"
-                        sh "kubectl apply $(ls *-prometheus-*.yaml | awk ' { print " -f " $1 } ')"
-                        sh "kubectl apply $(ls *-grafana-*.yaml | awk ' { print " -f " $1 }'  | grep -v grafana-import)"
-                        sh "kubectl apply -f 23-grafana-import-dash-batch.yaml"
+                        sh "kubectl create -f ./manifests-monitoring"
                         sh "kubectl get pods -n monitoring"
                     }
                 }
