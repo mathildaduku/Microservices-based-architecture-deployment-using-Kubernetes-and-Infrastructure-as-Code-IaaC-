@@ -34,7 +34,7 @@ pipeline {
                         sh "aws eks --region us-east-1 update-kubeconfig --name demo"
                         sh "terraform init"
                         sh "terraform apply -auto-approve"
-                        sh "kubectl create -f ./jenkins-pipeline/manifests-monitoring -n monitoring"
+                        sh "ls"
                         sh "kubectl get pods -n monitoring"
                     }
                 }
