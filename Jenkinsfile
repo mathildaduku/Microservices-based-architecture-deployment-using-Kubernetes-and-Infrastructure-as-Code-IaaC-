@@ -37,6 +37,7 @@ pipeline {
                         sh "kubectl get services"
                         sh "kubectl get services -n monitoring"
                         sh "kubectl get pods -n monitoring"
+                        sh "kubectl port-forward service/prometheus 9090 -n monitoring"
                     }
                 }
             }
