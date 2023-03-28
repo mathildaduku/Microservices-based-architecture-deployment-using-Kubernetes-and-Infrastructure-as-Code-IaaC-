@@ -31,13 +31,8 @@ pipeline {
             steps {
                 script {
                     dir('manifests-monitoring') {
-                        sh "aws eks --region us-east-1 update-kubeconfig --name demo"
                         sh "terraform init"
                         sh "terraform apply -auto-approve"
-                        sh "kubectl get services"
-                        sh "kubectl get services -n monitoring"
-                        sh "kubectl get pods -n monitoring"
-                        sh "kubectl port-forward service/prometheus 9090 -n monitoring"
                     }
                 }
             }
