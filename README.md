@@ -33,9 +33,9 @@ The domain names used include:
 
 - My applications after deployment 
 
-![](../jenkins-pipeline/Screenshot%20(242).png)
+![](./Screenshot%20(242).png)
 
-![](../jenkins-pipeline/Screenshot%20(243).png)
+![](./Screenshot%20(243).png)
 
 - Prometheus dashboard
 
@@ -43,6 +43,7 @@ The domain names used include:
 
 - Successful Jenkins CI/CD pipeline
 
-![](../jenkins-pipeline/Screenshot%20(244).png)
+![](./Screenshot%20(244).png)
+
 
 
