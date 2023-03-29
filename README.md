@@ -39,7 +39,17 @@ The domain names used include:
 
 - Prometheus dashboard
 
+![](./Screenshot%20(248).png)
+
 - Grafana dashboard
+
+![](./Screenshot%20(247).png)
+
+![](./Screenshot%20(249).png)
+
+![](./Screenshot%20(252).png)
+
+![](./Screenshot%20(255).png)
 
 - Successful Jenkins CI/CD pipeline
 
